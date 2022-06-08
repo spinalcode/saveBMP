@@ -129,8 +129,16 @@ void saveBMP(std::uint8_t* line, std::uint32_t y, bool skip){
         if(bmpFileOpened == true){
             bmpsavefile.seek(bmpDataOffset); // can we seek a file for WRITING?
             bmpDataOffset -= lineSize;
+            
+            // The following assumes that we're using 16bit mode
             // dump each palette line directly to the file, as the format is RGB565
-            bmpsavefile.write(&Pokitto::Display::palette[0] , 440);
+            //bmpsavefile.write(&Pokitto::Display::palette[0] , 440);
+
+            uint16_t FullLine[220];
+            for(int t=0; t<220; t++){
+                FullLine[t] = Pokitto::Display::palette[line[t]];
+            }
+            bmpsavefile.write(&FullLine[0] , 440);
 
             if(y==175){
                 savingBMP = false;
